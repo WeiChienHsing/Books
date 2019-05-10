@@ -1,0 +1,12 @@
+"001-002".match("^[0-9]{3}-[0-9]{3}$")
+
+$('div').filter(function() {
+    return $(this).attr('name').match('^[0-9]{3}-[0-9]{3}$');
+}).each(function(){
+    var beforeName = $(this).attr('name');
+    $(this).attr('name', 'xxxx[' + beforeName + ']');    
+});
+
+1.table definition.
+2.javascript
+
