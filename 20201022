@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Within a group of three phone numbers, ensure at least one is complete.</title>
+<link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
+ 
+</head>
+<body>
+<form id="myform">
+<select name="idTagArray" class="idTagGroup" id="test1">
+    <option value=""></option>
+<option value="1" disabled>1</option>
+<option value="2">2</option>
+</select>
+
+<select name="idTagArray" class="idTagGroup" id="test2">
+    <option value=""></option>
+    <option value="1" disabled>1</option>
+    <option value="2">2</option>
+    </select>
+
+<input type="submit" value="Validate!">
+</form>
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script>
+
+    $('#test1,#test2').change(function(){
+        $(this).find('option:eq(1)').attr('disabled', true);
+    })
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+  debug: true,
+  success: "valid"
+});
+
+jQuery.validator.addMethod("require_from_group", function(value, element, options) {
+     var numberRequired = options[0];
+     var selector = options[1];
+     var fields = $(selector, element.form);
+     var filled_fields = fields.filter(function() {
+       // it's more clear to compare with empty string
+       return $(this).val() != ""; 
+     });
+     var empty_fields = fields.not(filled_fields);
+     // we will mark only first empty field as invalid
+     if (filled_fields.length < numberRequired && empty_fields[0] == element) {
+       return false;
+     }
+     return true;
+// {0} below is the 0th item in the options field
+}, $.validator.messages.require_from_group);
+$( "#myform" ).validate({
+  rules: {
+    idTagArray: {
+      require_from_group: [1, ".idTagGroup"]
+    } 
+   
+  },
+  messages:{
+        idTagArray:{
+            require_from_group:"test"
+        }
+    }
+});
+
+
+</script>
+</body>
+</html>
